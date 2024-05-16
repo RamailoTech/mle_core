@@ -66,6 +66,16 @@ The `utils` module contains utility functions that are commonly used across diff
 
 The `config.py` file contains configuration logic to select the appropriate connectors based on the environment or other criteria.
 
+
+
+### Installing the Repository
+
+To install the repository, run the following command in the root directory of the project:
+
+```sh
+python3 setup.py install
+```
+
 ## Usage
 
 ### Setting Up Environment Variables
