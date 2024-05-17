@@ -1,4 +1,3 @@
-
 # MLE Core
 
 ## Overview
@@ -66,8 +65,6 @@ The `utils` module contains utility functions that are commonly used across diff
 
 The `config.py` file contains configuration logic to select the appropriate connectors based on the environment or other criteria.
 
-
-
 ### Installing the Repository
 
 To install the repository, run the following command in the root directory of the project:
@@ -83,6 +80,7 @@ python3 setup.py install
 Ensure you have the following environment variables set for database and LLM connectors:
 
 For PostgreSQL:
+
 ```
 DATABASE_USER=your_db_user
 DATABASE_PASSWORD=your_db_password
@@ -92,17 +90,20 @@ DATABASE_NAME=your_db_name
 ```
 
 For MongoDB:
+
 ```
 MONGO_URI=your_mongo_uri
 MONGO_DB_NAME=your_mongo_db_name
 ```
 
 For OpenAI:
+
 ```
 OPENAI_API_KEY=your_openai_api_key
 ```
 
 For Azure AI:
+
 ```
 AZURE_ENDPOINT=your_azure_endpoint
 AZURE_API_KEY=your_azure_api_key
@@ -146,6 +147,29 @@ if __name__ == "__main__":
     main()
 ```
 
+### Using Evaluators
+
+```python
+from mle_core.evaluators.tests_results_generation import Evaluator
+
+def main():
+    input_file_path = 'test_case.json'
+    output_file_path = 'output_file.csv'
+    output_file_type = 'csv'
+
+    # assume your evaluator_function be f_eval_function 
+    try:
+        evaluator = Evaluator(input_file_path,f_eval_function, output_file_path, output_file_type.lower())
+        evaluator.execute()
+        print("Processing completed successfully.")
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+
+if __name__ == '__main__':
+    main()
+
+```
+
 ## Contributing
 
 Feel free to contribute by making a pull request. Please ensure your code follows the style guidelines and includes appropriate tests.
@@ -153,3 +177,7 @@ Feel free to contribute by making a pull request. Please ensure your code follow
 ## License
 
 This repository is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
+
+```
+
+```
