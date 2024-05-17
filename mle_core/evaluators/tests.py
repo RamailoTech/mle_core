@@ -1,7 +1,7 @@
 import json
 import pandas as pd
 from abc import ABC, abstractmethod
-from functions import f_similarity_search
+from mle_core.evaluators.functions import f_similarity_search
 
 class Evaluator(ABC):
     def __init__(self, input_file_path, function, output_file_path,output_file_type):
