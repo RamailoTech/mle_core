@@ -1,0 +1,16 @@
+{
+    "tests": [
+        {
+            "test_id": 0,
+            "difficulty": "Moderate",
+            "expected_output": "This is test",
+            "predicted_output": "This is test"
+        },
+        {
+            "test_id": 1,
+            "difficulty": "High",
+            "expected_output": "This is test",
+            "predicted_output": "This is test case"
+        }
+    ]
+}
