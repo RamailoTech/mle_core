@@ -1,17 +1,24 @@
 import json
 import pandas as pd
 from abc import ABC, abstractmethod
-from utility_functions import f_similarity_search
+from functions import f_similarity_search
 
-class f_evaluate(ABC):
-    def __init__(self, input_path, function, output_path):
-        self.input_path = input_path
+class Evaluator(ABC):
+    def __init__(self, input_file_path, function, output_file_path,output_file_type):
+        self.input_file_path = input_file_path
         self.function = function
-        self.output_path = output_path
+        self.output_file_path = output_file_path
+        self.output_file_type = output_file_type
         self.data = None
+        
+        # Load and validate the JSON upon instantiation
+        self.load_and_validate_json()
+        
+        # Process data right after loading and validation
+        self.processed_data = self.process_data()
 
     def load_and_validate_json(self):
-        with open(self.input_path, 'r') as file:
+        with open(self.input_file_path, 'r') as file:
             try:
                 self.data = json.load(file)
                 
@@ -28,15 +35,12 @@ class f_evaluate(ABC):
                 raise ValueError(str(e))
 
     def process_data(self):
-        # Assuming the function expects a list of dictionaries (from JSON) and returns a DataFrame
         if not callable(self.function):
             raise ValueError("Provided function is not callable.")
         
         try:
-            
             if not all(isinstance(test, dict) for test in self.data["tests"]):
-                  raise ValueError("test_cases should be a list of dictionaries")
-            # Convert the list of tests to a DataFrame for processing
+                raise ValueError("test_cases should be a list of dictionaries")
             tests_df = pd.DataFrame(self.data["tests"])
             processed_data = self.function(tests_df)
             if not isinstance(processed_data, pd.DataFrame):
@@ -46,29 +50,24 @@ class f_evaluate(ABC):
             raise ValueError(f"Error processing data: {str(e)}")
 
     def output_data(self, data_frame):
-        # Determine file extension to decide format
-        if self.output_path.endswith('.csv'):
-            data_frame.to_csv(self.output_path, index=False)
-        elif self.output_path.endswith('.xlsx'):
-            data_frame.to_excel(self.output_path, index=False)
+        if self.output_file_type == "csv":
+            data_frame.to_csv(self.output_file_path, index=False)
+        elif self.output_file_type == 'xlsx':
+            data_frame.to_excel(self.output_file_path, index=False)
         else:
-            raise ValueError("Output file must be a .csv or .xlsx")
+            raise ValueError("Output file type be a csv or xlsx")
 
     def execute(self):
-        self.load_and_validate_json()
-        processed_data = self.process_data()
-        self.output_data(processed_data)
-
-
+        self.output_data(self.processed_data)
 
 if __name__=='__main__':
-    # Execute the workflow
-    input_path = 'test_case.json'
-    output_path = 'output_file.csv'  
+    input_file_path = 'test_case.json'
+    output_file_path = 'output_file.csv'  
+    output_file_type = 'csv'
 
     # Create an instance of the class
-    evaluator = f_evaluate(input_path, f_similarity_search, output_path)
     try:
+        evaluator = Evaluator(input_file_path, f_similarity_search, output_file_path,output_file_type.lower())
         evaluator.execute()
         print("Processing completed successfully.")
     except Exception as e:

@@ -2,7 +2,7 @@
     "tests": [
         {
             "test_id": 0,
-            "difficulty": "Moderate",
+            "difficultyy": "Moderate",
             "expected_output": "This is test",
             "predicted_output": "This is test"
         },
