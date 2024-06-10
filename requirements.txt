@@ -4,3 +4,5 @@ openai
 requests
 psycopg2-binary
 python-dotenv
+language-tool-python
+neo4j
