@@ -12,7 +12,7 @@ class OpenAIConnector(BaseLLMConnector):
         # No explicit connection needed for OpenAI API
         return openai
 
-    def get_model_response(self, user_prompt, system_prompt, temperature=0, max_tokens=100, **kwargs):
+    def get_model_response(self, user_prompt, system_prompt, temperature=0, max_tokens=100,stream= False, **kwargs):
         '''
         Function to get model response
         '''
@@ -23,7 +23,8 @@ class OpenAIConnector(BaseLLMConnector):
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
             ],
-            "max_tokens": max_tokens
+            "max_tokens": max_tokens,
+            "stream": stream
         }
         params.update(kwargs)
         
