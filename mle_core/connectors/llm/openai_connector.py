@@ -28,5 +28,5 @@ class OpenAIConnector(BaseLLMConnector):
         }
         params.update(kwargs)
         
-        response = openai.ChatCompletion.create(**params)
+        response = openai.chat.completion.create(**params)
         return response.choices[0].message["content"].strip()
