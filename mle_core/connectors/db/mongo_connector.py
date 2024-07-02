@@ -1,6 +1,6 @@
 import os
 from pymongo import MongoClient
-from .base import BaseConnector
+from mle_core.connectors.base import BaseConnector
 
 class MongoConnector(BaseConnector):
     def __init__(self, db_uri=None, db_name=None):

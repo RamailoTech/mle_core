@@ -5,6 +5,3 @@ class BaseLLMConnector(ABC):
     def get_connection(self):
         pass
 
-    @abstractmethod
-    def get_model_response(self, *args, **kwargs):
-        pass
