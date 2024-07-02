@@ -102,6 +102,11 @@ For OpenAI:
 OPENAI_API_KEY=your_openai_api_key
 ```
 
+For ChatAnthropic:
+```
+ANTHROPIC_API_KEY=your_anthropic_api_key
+```
+
 For Azure AI:
 ```
 AZURE_ENDPOINT=your_azure_endpoint
@@ -114,22 +119,52 @@ AZURE_DEPLOYMENT_NAME=your_azure_deployment_name
 ```python
 from mle_core.chat import ChatService
 
-def main():
-    llm_type = "openai"  # or "azure"
+import asyncio
+from dotenv import load_dotenv
+from mle_core.chat.chat_service import ChatService
+from langchain_core.pydantic_v1 import BaseModel, Field
+
+load_dotenv()
+
+
+async def main():
+    llm_type='openai' # or "azure" or "anthropic"
     chat_service = ChatService(llm_type)
+    method = 'sync'  # or async
+    response_method = 'invoke'  # or "batch" or "stream"
+    system_message = 'You are a helpful assistant.'
+    user_message = 'Tell me a joke'
+    input = {
+        "system_message": system_message,
+        "user_message": user_message
+    }
+    if method == "sync":
+        try:
+            response = chat_service.get_sync_response(method, response_method, input, model_name="gpt-3.5-turbo", is_structured=False, pydantic_model=None)
+            print(response)
+        except Exception as e:
+            print("An error occurred:", e)
 
-    user_prompt = "What is the weather like today?"
-    system_prompt = "You are a helpful assistant."
-    response = chat_service.get_response(
-        user_prompt=user_prompt,
-        system_prompt=system_prompt,
-        temperature=0.7
-    )
-    print(response)
+    elif method == "async":
+        try:
+            response = await chat_service.get_async_response(method, response_method, input, model_name="gpt-3.5-turbo", is_structured=False, pydantic_model=None)
+            print(response)
+        except Exception as e:
+            print("An error occurred:", e)
 
-if __name__ == "__main__":
-    main()
+asyncio.run(main())
 ```
+
+### Note: Using Chat Service
+
+1. If response_method is "batch" the input should be list of input. 
+
+Eaxmple: 
+```
+system_message = 'You are a helpful assistant.'
+input = [{'system_message': system_message, 'user_message': 'Tell me a bear joke.'}, {'system_message': system_message, 'user_message': 'Tell me a cat joke.'}]
+```
+
 
 ### Using Database Connectors
 
