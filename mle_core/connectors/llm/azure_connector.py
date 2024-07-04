@@ -8,7 +8,7 @@ class AzureAIConnector(BaseLLMConnector):
         self.endpoint = endpoint or os.environ.get("AZURE_ENDPOINT")
         self.api_key = api_key or os.environ.get("AZURE_API_KEY")
         self.deployment_name = deployment_name or os.environ.get("AZURE_DEPLOYMENT_NAME")
-
+        
     def get_connection(self, api_version = "2024-05-01-preview", **kwargs):
         """function to return model"""
         params = {
