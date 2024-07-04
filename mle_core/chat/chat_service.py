@@ -5,29 +5,29 @@ from typing import List
 
 logger = setup_logging()
 
+#TODO add exp handling
 class ChatService:
     def __init__(self, llm_type):
         self.llm_connector = get_llm_connector(llm_type)
 
-    def get_lecl_chain(self, model_name, is_structured=False, pydantic_model=None,**kwargs):
+    def get_lecl_chain(self, model_name, is_structured=False, pydantic_model=None, **kwargs):
         if is_structured and pydantic_model is None:
             raise ValueError("pydantic_model cannot be None when is_structured is True")
-        
+
         prompt = ChatPromptTemplate.from_messages(
             [
                 ("system", "{system_message}"),
                 ("human", "{user_message}")
             ]
         )
-        llm = self.llm_connector.get_connection(model_name=model_name,**kwargs)
-        
+        llm = self.llm_connector.get_connection(model_name=model_name, **kwargs)
+
         if is_structured and pydantic_model is not None:
             llm = llm.with_structured_output(pydantic_model)
-        
-        
+
         chain = prompt | llm
         return chain
-    
+
     async def async_invoke(self, chain, input):
         return await chain.ainvoke(input)
 
@@ -48,7 +48,7 @@ class ChatService:
         for s in chain.stream(input):
             yield s   
 
-    def get_sync_response(self, method, response_method, input, model_name, is_structured=False, pydantic_model=None, **kwargs):
+    def get_sync_response(self, response_method, input, model_name, is_structured=False, pydantic_model=None, **kwargs):
         chain = self.get_lecl_chain(model_name=model_name, is_structured=is_structured, pydantic_model=pydantic_model, **kwargs)
         if response_method == "invoke":
             response = self.sync_invoke(chain, input)
@@ -66,16 +66,15 @@ class ChatService:
                 if not is_structured:
                     output_content.append(s.content)
                 else:
-                    output_content=s
+                    output_content = s
             if not is_structured:
                 return "".join(output_content)
             return output_content
         else:
             raise ValueError("Invalid response_method for sync")
 
-
-    async def get_async_response(self, method, response_method, input, model_name, is_structured=False, pydantic_model=None,  **kwargs):
-        chain = self.get_lecl_chain(model_name=model_name, is_structured=is_structured, pydantic_model=pydantic_model,**kwargs)
+    async def get_async_response(self, response_method, input, model_name, is_structured=False, pydantic_model=None, **kwargs):
+        chain = self.get_lecl_chain(model_name=model_name, is_structured=is_structured, pydantic_model=pydantic_model, **kwargs)
         if response_method == "invoke":
             response = await self.async_invoke(chain, input)
             if not is_structured:
@@ -93,7 +92,7 @@ class ChatService:
                 if not is_structured:
                     output_content.append(s.content)
                 else:
-                    output_content=s      
+                    output_content = s      
             if not is_structured:
                 return "".join(output_content)    
             return output_content
