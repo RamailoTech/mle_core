@@ -1,6 +1,8 @@
-import os
 from .connectors.db import PostgresConnector, MongoConnector
-from .connectors.llm import OpenAIConnector, AzureAIConnector
+from mle_core.connectors.llm.openai_connector import OpenAIConnector
+from mle_core.connectors.llm.azure_connector import AzureAIConnector
+from mle_core.connectors.llm.anthropic_connector import AnthropicConnector
+
 
 def get_db_connector(db_type):
     if db_type == "postgres":
@@ -15,5 +17,7 @@ def get_llm_connector(llm_type):
         return OpenAIConnector()
     elif llm_type == "azure":
         return AzureAIConnector()
+    elif llm_type == "anthropic":
+        return AnthropicConnector()
     else:
         raise ValueError("Unsupported LLM type")
