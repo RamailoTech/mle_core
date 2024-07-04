@@ -5,6 +5,7 @@ requests
 psycopg2-binary
 python-dotenv
 langchain
+langchain-openai
 langchain-community
 pytest
 pytest-asyncio

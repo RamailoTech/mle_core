@@ -73,6 +73,10 @@ To install the repository, run the following command in the root directory of th
 python3 setup.py install
 ```
 
+```sh
+pip install -r requirements.txt
+```
+
 ## Usage
 
 ### Setting Up Environment Variables
