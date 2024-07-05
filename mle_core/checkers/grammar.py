@@ -36,7 +36,8 @@ class JsonGrammarChecker:
                             "offset": m.offset,
                             "category": m.category,
                             "ruleIssueType": m.ruleIssueType,
-                            "sentence": m.sentence
+                            "sentence": m.sentence,
+                            "replacements": m.replacements
                         } for m in matches]
                 elif isinstance(value, (dict, list)):
                     nested_errors = self._check_recursive(value)
@@ -54,7 +55,8 @@ class JsonGrammarChecker:
                             "offset": m.offset,
                             "category": m.category,
                             "ruleIssueType": m.ruleIssueType,
-                            "sentence": m.sentence
+                            "sentence": m.sentence,
+                            "replacements": m.replacements
                         } for m in matches]
                 elif isinstance(item, (dict, list)):
                     nested_errors = self._check_recursive(item)
