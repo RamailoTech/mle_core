@@ -22,7 +22,7 @@ class Neo4jSanityCheck:
         try:
             result = session.run("RETURN 1")
             if result.single()[0] == 1:
-                return "accesible"
+                return "True"
         except Exception as e:
             print(f"Error accessing database: {e}")
 
