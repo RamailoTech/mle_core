@@ -10,3 +10,4 @@ langchain-community
 pytest
 pytest-asyncio
 langchain-anthropic
+# prompt-optimizer

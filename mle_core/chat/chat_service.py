@@ -3,6 +3,13 @@ from mle_core.utils import setup_logging
 from langchain_core.prompts import ChatPromptTemplate
 from typing import List
 
+from prompt_optimizer.metric import TokenMetric
+from prompt_optimizer.poptim import EntropyOptim
+from langchain.schema import (
+    HumanMessage,
+    SystemMessage
+)
+
 logger = setup_logging()
 
 #TODO add exp handling
@@ -10,7 +17,72 @@ class ChatService:
     def __init__(self, llm_type):
         self.llm_connector = get_llm_connector(llm_type)
 
+
+    def grammar_check(self, prompt):
+        """
+        Check the grammar of the prompt.
+        """
+        # Placeholder for grammar check logic
+        # This could be an integration with a grammar check API or library
+        return True
+    
+    def check_keywords(self, prompt):
+        # get all the keywords expected in the output
+        # check if the keywords are properly defined in the prompt
+        # return any(keyword in prompt for keyword in keywords)
+        return True
+    
+    def optimize_prompt(self, prompt):
+        """
+            Optimize the prompt for the LLM.
+            Reduce the number of tokens in the prompt.
+            Add more keywords to the prompt.
+        """
+        optimized_prompt = prompt.strip()
+        return optimized_prompt
+    
+    def validate_prompt(self, prompt):
+        """
+            Validate the prompt structure or content.
+        """
+        if not prompt:
+            raise ValueError("Prompt cannot be empty.")
+        return True
+
+    def validate_example(self, prompt, examples):
+        """
+            Validate the examples provided.
+        """
+        if not len(examples) > 0:
+            raise ValueError("Cannot accept prompt with examples")
+        return True
+    
+    def check_test_suite(self, prompt, test_suites):
+        """
+        Check if a test suite exists for the prompt or example.
+        """
+        # Placeholder for checking if a test suite exists
+        return True  # Assuming test suite exists for placeholder
+    
+    def ensure_llm_ready(self, prompt, **kwargs):
+        """
+            Block LLM calls if the system is not ready.
+        """
+        try:
+            test_suites = kwargs.get("test_suites", [])
+            self.grammar_check(prompt)
+            self.check_keywords()
+            self.optimize_prompt()
+            self.validate_example()
+            self.check_test_suite(prompt, test_suites)
+            self.validate_prompt()
+        except Exception as e:
+            raise RuntimeError("LLM is not ready.", e)
+        
+        return True
+
     def get_lecl_chain(self, model_name, is_structured=False, pydantic_model=None, **kwargs):
+        self.ensure_llm_ready()
         if is_structured and pydantic_model is None:
             raise ValueError("pydantic_model cannot be None when is_structured is True")
 
