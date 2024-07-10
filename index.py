@@ -8,39 +8,50 @@ load_dotenv()
 
 
 async def main():
-    llm_type='openai' # or "azure" or "anthropic"
-    chat_service = ChatService(llm_type)
+    chat_service = ChatService(
+        'openai', # or "azure" or "anthropic", 
+    )
 
-    method = 'sync'  # or async
-    response_method = 'invoke'  # or "batch" or "stream"
-    system_message = 'You are a helpful assistant.'
-    user_message = 'What is the weather like today?'
-    model_name = "gpt-3.5-turbo"
-    input = {
-        "system_message": system_message,
-        "user_message": user_message
+    model_params = {
+        "model_name": "gpt-3.5-turbo",
+        "pydantic_model": None,
+        "method": "sync",
     }
-    if method == "sync":
-        response = chat_service.get_sync_response(
-        response_method, 
-        input, 
-        model_name=model_name, 
-        temperature=0.2, 
-        max_tokens=1000, 
-        is_structured=False, 
-        pydantic_model=None)
-        print(response)
 
-    elif method == "async":
-        response = await chat_service.get_async_response(
-        response_method, 
-        input, 
-        model_name=model_name, 
-        temperature=0.2, 
-        max_tokens=1000,
-        is_structured=False, 
-        pydantic_model=None)
-        print(response)
+    input_params = {
+        "system_message": 'You are a helpful assistant.',
+        "user_message": '''
+            What is the weather like today? 
+            Ouptut should be in only one word that describes the weather.
+        ''',
+    }
 
+    output_params = {
+        "response_method": 'invoke',
+        "is_structured": False,
+        "temperature": 0.2,
+        "max_tokens": 1000
+    }
+
+    options = {
+        "grammar_check": True,
+        "keyword_check": True,
+        "optimize_prompt": True,
+        "validate_example": True,
+        "validate_tests": True
+    }
+
+    tests = [{
+        "input": "What is the weather like today?",
+        "expected_output": "SUNNY"
+    }]
+
+    examples = [
+        f"If weather is clear, bright, hot, output should be 'SUNNY'",
+        f"If weather is wet, damp, drizzly, output should be 'RAINY'",
+    ]
+
+    response = chat_service.get_response(model_params, input_params, output_params,  options, tests, examples)    
+    print(response)
 
 asyncio.run(main())

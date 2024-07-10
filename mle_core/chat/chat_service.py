@@ -3,8 +3,8 @@ from mle_core.utils import setup_logging
 from langchain_core.prompts import ChatPromptTemplate
 from typing import List
 
-from prompt_optimizer.metric import TokenMetric
-from prompt_optimizer.poptim import EntropyOptim
+# from prompt_optimizer.metric import TokenMetric
+# from prompt_optimizer.poptim import EntropyOptim
 from langchain.schema import (
     HumanMessage,
     SystemMessage
@@ -30,6 +30,7 @@ class ChatService:
         # get all the keywords expected in the output
         # check if the keywords are properly defined in the prompt
         # return any(keyword in prompt for keyword in keywords)
+        # raise ValueError("Prompt does not contain required keywords.")
         return True
     
     def optimize_prompt(self, prompt):
@@ -53,7 +54,7 @@ class ChatService:
         """
             Validate the examples provided.
         """
-        if not len(examples) > 0:
+        if not examples or len(examples) == 0:
             raise ValueError("Cannot accept prompt with examples")
         return True
     
@@ -61,28 +62,43 @@ class ChatService:
         """
         Check if a test suite exists for the prompt or example.
         """
-        # Placeholder for checking if a test suite exists
-        return True  # Assuming test suite exists for placeholder
+        if not test_suites or len(test_suites) == 0:
+            raise ValueError("No test suite provided.")
+        return True
     
-    def ensure_llm_ready(self, prompt, **kwargs):
+    def ensure_llm_ready(self, prompt, options={}, tests=[], examples=[]):
         """
             Block LLM calls if the system is not ready.
         """
+        grammar_check = options.get("grammar_check", True)
+        keyword_check = options.get("keyword_check", True)
+        optimize_prompt = options.get("optimize_prompt", True)
+        validate_example = options.get("validate_example", True)
+        validate_tests = options.get("validate_tests", True)
+
         try:
-            test_suites = kwargs.get("test_suites", [])
-            self.grammar_check(prompt)
-            self.check_keywords()
-            self.optimize_prompt()
-            self.validate_example()
-            self.check_test_suite(prompt, test_suites)
-            self.validate_prompt()
+            if grammar_check:
+                self.grammar_check(prompt)
+
+            if optimize_prompt:
+                prompt = self.optimize_prompt(prompt)
+
+            if keyword_check:
+                self.check_keywords(prompt)
+
+            if validate_example:
+                self.validate_example(prompt, examples)
+
+            if validate_tests:
+                self.check_test_suite(prompt, tests)
+
+            self.validate_prompt(prompt)
         except Exception as e:
             raise RuntimeError("LLM is not ready.", e)
         
-        return True
+        return prompt
 
     def get_lecl_chain(self, model_name, is_structured=False, pydantic_model=None, **kwargs):
-        self.ensure_llm_ready()
         if is_structured and pydantic_model is None:
             raise ValueError("pydantic_model cannot be None when is_structured is True")
 
@@ -120,6 +136,43 @@ class ChatService:
         for s in chain.stream(input):
             yield s   
 
+    def get_response(self, model_params={}, input_params={}, output_params={},options={},  tests=[], examples=[], **kwargs):
+        # Extracting input parameters
+        system_message = input_params.get("system_message", "")
+        user_message = input_params.get("user_message", "")
+
+        # Ensure prompt is ready for llm call
+        user_message = self.ensure_llm_ready(user_message, options, tests, examples)
+
+        # Extracting model parameters
+        model_name = model_params.get("model_name", "")
+        pydantic_model = model_params.get("pydantic_model", None)
+        method = model_params.get("method", None)
+
+        # Extracting output parameters
+        response_method = output_params.get("response_method", "invoke")
+        is_structured = output_params.get("is_structured", False)
+        temperature = output_params.get("temperature", 0)
+        max_tokens = output_params.get("max_tokens", 1000)
+
+        messages = { "user_message": user_message, "system_message": system_message }
+        if method == "sync":
+            return self.get_sync_response(
+            response_method, 
+            messages, 
+            model_name, 
+            is_structured,
+            pydantic_model,
+        )
+        elif method == "async":
+            return self.get_async_response(
+                response_method, 
+                messages,
+                model_name, 
+                is_structured, 
+                pydantic_model,
+            )
+        
     def get_sync_response(self, response_method, input, model_name, is_structured=False, pydantic_model=None, **kwargs):
         chain = self.get_lecl_chain(model_name=model_name, is_structured=is_structured, pydantic_model=pydantic_model, **kwargs)
         if response_method == "invoke":
