@@ -1,4 +1,4 @@
-from .grammar import JsonGrammarChecker 
+from .grammar import JsonGrammarChecker,check_grammar_prowriter
 from .neo4j_consistency import Neo4jSanityCheck
 from .fact_checker import f_fact_checker
 from .hyperbole_detector import f_hyperbole_detector
