@@ -5,7 +5,7 @@ from langchain_core.pydantic_v1 import BaseModel, Field
 import os 
 
 class FactCheckerOutput(BaseModel):
-    output: str = Field(description='returns boolean True or False')
+    output: bool = Field(description='Returns boolean')
 
 
 def f_fact_checker(query, context,answer,llm_type='openai', model='gpt-3.5-turbo', method = 'llm') -> bool: 
@@ -35,10 +35,7 @@ def f_fact_checker(query, context,answer,llm_type='openai', model='gpt-3.5-turbo
             is_structured=True, 
             pydantic_model=FactCheckerOutput
         )
-        if 'True' in llm_response:
-            return True
-        else:
-            return False
+        return llm_response.output
 
     elif method == 'similarity_check':
         return True

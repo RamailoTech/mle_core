@@ -6,19 +6,12 @@ import os
 
 
 class HyperboleOutput(BaseModel):
-    output: bool = Field(description='Returns boolean True or False')
+    output: bool = Field(description='Returns boolean')
 
 
 
 def f_hyperbole_detector(query, context,answer,llm_type='openai', model='gpt-3.5-turbo', method = 'llm') -> bool: 
-    """
-    Function to check the fact of the query
-    Input Args : 
-    query : str : The user query
-    context : str : The context of the query
-    model : str : The model to be used for the fact checking
-    method : str : The method to be used for the fact checking. Methods available are 'llm' and 'similarity_check'
-    """
+
     chat_service = ChatService(llm_type)
     if method == 'llm':
         user_prompt = f"question: ```{query} \n answer: {answer}```"
@@ -35,15 +28,7 @@ def f_hyperbole_detector(query, context,answer,llm_type='openai', model='gpt-3.5
             max_tokens=1000, 
             is_structured=True, 
             pydantic_model=HyperboleOutput)
-        print('---------------------------------------------------------------------')
-        print('---------------------------------------------------------------------')
-        print('---------------------------------------------------------------------')
-        print('---------------------------------------------------------------------')
-        print(llm_response)
-        if 'True' in llm_response:
-            return True
-        else:
-            return False
+        return llm_response.output
 
     elif method == 'similarity_check':
         return True
