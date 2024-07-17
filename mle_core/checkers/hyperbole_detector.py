@@ -6,7 +6,7 @@ import os
 
 
 class HyperboleOutput(BaseModel):
-    output: str = Field(description='returns boolean True or False')
+    output: bool = Field(description='Returns boolean True or False')
 
 
 
@@ -22,7 +22,7 @@ def f_hyperbole_detector(query, context,answer,llm_type='openai', model='gpt-3.5
     chat_service = ChatService(llm_type)
     if method == 'llm':
         user_prompt = f"question: ```{query} \n answer: {answer}```"
-        system_prompt = f_hyberbole_detector_system_prompt(context)
+        system_prompt = f_hyperbole_detector_system_prompt(context)
         input = {
                 "system_message": system_prompt,
                 "user_message": user_prompt 
@@ -35,6 +35,11 @@ def f_hyperbole_detector(query, context,answer,llm_type='openai', model='gpt-3.5
             max_tokens=1000, 
             is_structured=True, 
             pydantic_model=HyperboleOutput)
+        print('---------------------------------------------------------------------')
+        print('---------------------------------------------------------------------')
+        print('---------------------------------------------------------------------')
+        print('---------------------------------------------------------------------')
+        print(llm_response)
         if 'True' in llm_response:
             return True
         else:

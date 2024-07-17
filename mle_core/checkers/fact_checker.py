@@ -33,7 +33,7 @@ def f_fact_checker(query, context,answer,llm_type='openai', model='gpt-3.5-turbo
             temperature=0.2, 
             max_tokens=1000, 
             is_structured=True, 
-            pydantic_model=FactCheckerOutput()
+            pydantic_model=FactCheckerOutput
         )
         if 'True' in llm_response:
             return True
