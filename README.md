@@ -276,7 +276,7 @@ if __name__ == '__main__':
 ```
 ### Using Checkers
 
-## Fact checker and hyperbole detector
+#### Fact checker and hyperbole detector
 ```python
 from mle_core.checkers import f_hyperbole_detector, f_fact_checker
 
@@ -287,7 +287,7 @@ from mle_core.checkers import f_hyperbole_detector, f_fact_checker
 fact = f_fact_checker(question, context, answer)
 hyperbole = f_hyperbole_detector(question, context, answer)
 ```
-## Grammar checker
+#### Grammar checker
 
 ```python
 # language-tool-python
