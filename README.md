@@ -287,6 +287,32 @@ from mle_core.checkers import f_hyperbole_detector, f_fact_checker
 fact = f_fact_checker(question, context, answer)
 hyperbole = f_hyperbole_detector(question, context, answer)
 ```
+
+#### Database consistency checker
+```python
+from mle_core.connectors.db import Neo4jConnector
+from mle_core.checkers import Neo4jSanityCheck
+
+uri = os.getenv('NEO4J_URI')
+user = os.getenv('NEO4J_USERNAME')
+password = os.getenv('NEO4J_PASSWORD')
+if not uri or not user or not password:
+    raise ValueError("Missing one or more required environment variables: NEO4J_URI, NEO4J_USERNAME, NEO4J_PASSWORD")
+
+neo4j_connection = Neo4jConnector(uri=uri, user=user, password=password)
+
+
+def check_database_consistency():
+    try:
+        neo4j_sanity_check = Neo4jSanityCheck(neo4j_connection)
+        results = neo4j_sanity_check.run_checks()
+        return results
+    except Exception as e:
+        print(f"An error occurred during database consistency check: {str(e)}")
+
+```
+
+
 #### Grammar checker
 
 ```python
