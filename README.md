@@ -274,6 +274,45 @@ if __name__ == '__main__':
     main()
 
 ```
+### Using Checkers
+
+## Fact checker and hyperbole detector
+```python
+from mle_core.checkers import f_hyperbole_detector, f_fact_checker
+
+# The context basically refers to the knowledge base
+# question is generally the user prompt to the system
+# answer generally is the LLM generated output
+
+fact = f_fact_checker(question, context, answer)
+hyperbole = f_hyperbole_detector(question, context, answer)
+```
+## Grammar checker
+
+```python
+# language-tool-python
+
+from mle_core.checkers import JsonGrammarChecker
+
+def check_grammar_language_tool(json):
+    result = {"success": True, "error": []}
+    keywords = ['a','b']          # these are the words not to run the grammar checker on
+    json_grammar_checker = JsonGrammarChecker(json, keywords)
+    errors = json_grammar_checker.check_json_for_errors()
+    return errors
+
+# Prowriter
+def grammar_check_prowriter(prompt):
+    try:
+        result = check_grammar_prowriter(prompt)
+        return result
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return False
+
+
+```
+
 
 ## Contributing
 
