@@ -24,6 +24,7 @@ class ChatService:
         """
         # Placeholder for grammar check logic
         # This could be an integration with a grammar check API or library
+        # apply only if it crossess some threshold value
         return True
     
     def check_keywords(self, prompt):
@@ -56,11 +57,17 @@ class ChatService:
         """
         if not examples or len(examples) == 0:
             raise ValueError("Cannot accept prompt with examples")
-        return True
+        
+        prompt += f"""
+            Examples:
+            {examples}
+        """
+        return prompt
     
     def check_test_suite(self, prompt, test_suites):
         """
         Check if a test suite exists for the prompt or example.
+        Execute llm using the test suite and fail if it doesn't match with the expected output.
         """
         if not test_suites or len(test_suites) == 0:
             raise ValueError("No test suite provided.")
@@ -87,7 +94,7 @@ class ChatService:
                 self.check_keywords(prompt)
 
             if validate_example:
-                self.validate_example(prompt, examples)
+                prompt = self.validate_example(prompt, examples)
 
             if validate_tests:
                 self.check_test_suite(prompt, tests)
