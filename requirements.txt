@@ -11,3 +11,4 @@ pytest
 pytest-asyncio
 langchain-anthropic
 # prompt-optimizer
+neo4j==5.22.0
