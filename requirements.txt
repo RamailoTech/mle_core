@@ -12,3 +12,6 @@ pytest-asyncio
 langchain-anthropic
 # prompt-optimizer
 neo4j==5.22.0
+dspy-ai==2.4.12
+language-tool-python==2.8
+ProWritingAidSDK @ git+https://github.com/prowriting/prowritingaid.python.git@fd6fc238778b7b5ba4bb56835d3ed73594f3bcb7

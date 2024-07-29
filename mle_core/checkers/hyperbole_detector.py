@@ -1,6 +1,4 @@
 from mle_core.checkers.prompts import f_hyperbole_detector_system_prompt
-from loguru import logger
-from mle_core.chat.chat_service import ChatService
 from langchain_core.pydantic_v1 import BaseModel, Field
 import os 
 
@@ -12,6 +10,7 @@ class HyperboleOutput(BaseModel):
 
 def f_hyperbole_detector(query, context,answer,llm_type='openai', model='gpt-3.5-turbo', method = 'llm') -> bool: 
 
+    from mle_core.chat.chat_service import ChatService
     chat_service = ChatService(llm_type)
     if method == 'llm':
         user_prompt = f"question: ```{query} \n answer: {answer}```"

@@ -1,7 +1,11 @@
+from turtle import forward
 from mle_core.config import get_llm_connector
 from mle_core.utils import setup_logging
 from langchain_core.prompts import ChatPromptTemplate
 from typing import List
+from mle_core.checkers import JsonGrammarChecker, check_grammar_prowriter
+
+import re
 
 # from prompt_optimizer.metric import TokenMetric
 # from prompt_optimizer.poptim import EntropyOptim
@@ -9,7 +13,6 @@ from langchain.schema import (
     HumanMessage,
     SystemMessage
 )
-
 logger = setup_logging()
 
 #TODO add exp handling
@@ -18,20 +21,33 @@ class ChatService:
         self.llm_connector = get_llm_connector(llm_type)
 
 
-    def grammar_check(self, prompt):
+    def grammar_check(self, prompt, is_json=False, keywords=[]):
         """
         Check the grammar of the prompt.
         """
-        # Placeholder for grammar check logic
-        # This could be an integration with a grammar check API or library
-        # apply only if it crossess some threshold value
+        if is_json:
+            errors = JsonGrammarChecker(prompt, keywords)
+            if errors:
+                raise ValueError(f"Cannot accept prompt with grammatical errors : {errors}")
+            return True
+        
+        results = check_grammar_prowriter(prompt)
+        if len(results)> 0:
+            raise ValueError(f"Cannot accept prompt with grammatical errors : {results}")
+
         return True
     
-    def check_keywords(self, prompt):
+    def check_keywords(self, prompt, keywords ={}):
         # get all the keywords expected in the output
         # check if the keywords are properly defined in the prompt
         # return any(keyword in prompt for keyword in keywords)
-        # raise ValueError("Prompt does not contain required keywords.")
+        # 
+        missing_keywords = {}
+        for keyword, context in keywords.items():
+            if not re.search(rf'\b{keyword}\b', prompt):
+                missing_keywords[keyword] = 'Keyword not found'
+        if missing_keywords:
+            raise ValueError(f"Prompt does not contain required keywords. {missing_keywords}")
         return True
     
     def optimize_prompt(self, prompt):
@@ -54,6 +70,7 @@ class ChatService:
     def validate_example(self, prompt, examples):
         """
             Validate the examples provided.
+            Generate moresamples based upon the examples provided. [Dspy]
         """
         if not examples or len(examples) == 0:
             raise ValueError("Cannot accept prompt with examples")
@@ -73,7 +90,7 @@ class ChatService:
             raise ValueError("No test suite provided.")
         return True
     
-    def ensure_llm_ready(self, prompt, options={}, tests=[], examples=[]):
+    def ensure_llm_ready(self, prompt, keywords={}, options={}, tests=[], examples=[]):
         """
             Block LLM calls if the system is not ready.
         """
@@ -91,7 +108,7 @@ class ChatService:
                 prompt = self.optimize_prompt(prompt)
 
             if keyword_check:
-                self.check_keywords(prompt)
+                self.check_keywords(prompt, keywords)
 
             if validate_example:
                 prompt = self.validate_example(prompt, examples)
@@ -147,9 +164,11 @@ class ChatService:
         # Extracting input parameters
         system_message = input_params.get("system_message", "")
         user_message = input_params.get("user_message", "")
+        keywords = input_params.get("keywords", "")
 
         # Ensure prompt is ready for llm call
-        user_message = self.ensure_llm_ready(user_message, options, tests, examples)
+        user_message = self.ensure_llm_ready(user_message,keywords, options, tests, examples)
+        print(user_message, "\n=============")
 
         # Extracting model parameters
         model_name = model_params.get("model_name", "")

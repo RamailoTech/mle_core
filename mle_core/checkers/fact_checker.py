@@ -1,8 +1,5 @@
 from mle_core.checkers.prompts import f_fact_checker_system_prompt
-from loguru import logger
-from mle_core.chat.chat_service import ChatService
 from langchain_core.pydantic_v1 import BaseModel, Field
-import os 
 
 class FactCheckerOutput(BaseModel):
     output: bool = Field(description='Returns boolean')
@@ -17,6 +14,7 @@ def f_fact_checker(query, context,answer,llm_type='openai', model='gpt-3.5-turbo
     model : str : The model to be used for the fact checking
     method : str : The method to be used for the fact checking. Methods available are 'llm' and 'similarity_check'
     """
+    from mle_core.chat.chat_service import ChatService
     chat_service = ChatService(llm_type)
     if method == 'llm':
         user_prompt = f"question: ```{query} \n answer: {answer}```"

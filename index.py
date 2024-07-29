@@ -21,19 +21,26 @@ async def main():
     input_params = {
         "system_message": 'You are a sophisticated assistant trained to analyze sentiments and classify comments accurately.',
         "user_message": '''
-            Classify the following comment as 
+            Classify the following comment as:
             category: 'in favor', 'against', or 'neutral' 
             based on the following post:
             Post: Karnataka transport department seizes 133 bike taxis in Bengaluru - Speechless!!
-            Comment: Start walking guys. Walk on the road if you don't have footpath. Take metros, buses, protect your phone and wallet. If everyone starts doing this, autowalas will start protesting to ban walking next.
-            The final output should be in the following JSON format:
+            Comment: Start walking guys. Walk on the road if you don't have footpath. Take metros, buses, protect your phone and wallet. If everyone starts doing this, Auto drivers will start protesting to ban walking next.
+            The final output should be in the following Json format:
             {
                 "category": "<category>",
                 "reason": "<reason>"
             }
             Your Task:
-            Analyze the given comment and classify it accordingly. Remember to format your response as shown in the example.
+            Analyze the given comment and classify it accordingly. Remember to format your response, as shown in the example.
         ''',
+        "keywords": {
+              "city": "Bangalore",
+              "post": "Discussion in reddit by some user",
+              "comment": "Comment placed by other users on the post",
+              "category": "'in favor', 'against', or 'neutral'",
+              "reason": ""
+        },
     }
 
     output_params = {

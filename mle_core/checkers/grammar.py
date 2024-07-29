@@ -1,6 +1,6 @@
 from __future__ import print_function
 import json
-import language_tool_python
+from language_tool_python import LanguageTool
 import ProWritingAidSDK
 from ProWritingAidSDK.rest import ApiException
 import os
@@ -16,7 +16,7 @@ class JsonGrammarChecker:
             raise ValueError("json_data must be a string, dictionary, or list")
         
         self.keywords = keywords if keywords is not None else []
-        self.tool = language_tool_python.LanguageTool('en-US')
+        self.tool = LanguageTool('en-US')
 
     def check_text(self, text):
         matches = self.tool.check(text)
