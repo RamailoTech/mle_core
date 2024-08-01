@@ -1,4 +1,3 @@
-from turtle import forward
 from mle_core.config import get_llm_connector
 from mle_core.utils import setup_logging
 from langchain_core.prompts import ChatPromptTemplate
