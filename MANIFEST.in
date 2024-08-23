@@ -1,2 +1,4 @@
 include README.md
+include requirements.txt 
+include exclude_requirements.txt
 recursive-include mle_core *
