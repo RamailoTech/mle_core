@@ -67,14 +67,14 @@ The `config.py` file contains configuration logic to select the appropriate conn
 
 ### Installing the Repository
 
-To install the repository, run the following command in the root directory of the project:
+First, install the `prowritingaid-sdk` dependency for grammar checker.
 
 ```sh
-python3 setup.py install
+pip install git+https://github.com/prowriting/prowritingaid.python.git
 ```
-
+Then, install our package
 ```sh
-pip install -r requirements.txt
+pip install mle_core
 ```
 
 ## Usage
@@ -347,7 +347,3 @@ Feel free to contribute by making a pull request. Please ensure your code follow
 ## License
 
 This repository is licensed under the MIT License. See the [LICENSE](LICENSE) file for more information.
-
-```
-
-```

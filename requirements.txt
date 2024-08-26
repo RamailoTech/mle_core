@@ -1,17 +1,15 @@
-sqlalchemy
-pymongo
-openai
-requests
-psycopg2-binary
-python-dotenv
-langchain
-langchain-openai
-langchain-community
-pytest
-pytest-asyncio
-langchain-anthropic
-# prompt-optimizer
+sqlalchemy==2.0.32
+pymongo==4.8.0
+openai==1.42.0
+requests==2.32.3
+psycopg2-binary==2.9.9
+python-dotenv==1.0.1
+langchain==0.2.14
+langchain-openai==0.1.22
+langchain-community==0.2.12
+pytest==8.3.2
+pytest-asyncio==0.24.0
+langchain-anthropic==0.1.23
 neo4j==5.22.0
 dspy-ai==2.4.12
 language-tool-python==2.8
-ProWritingAidSDK @ git+https://github.com/prowriting/prowritingaid.python.git@fd6fc238778b7b5ba4bb56835d3ed73594f3bcb7
